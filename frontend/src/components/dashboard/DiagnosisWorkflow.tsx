@@ -58,9 +58,9 @@ export function DiagnosisWorkflow() {
         setResult(diagnosisResult)
         addItem(diagnosisResult)
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Сервис диагностики временно недоступен. Повторите попытку.'
-        )
+        const msg = err instanceof Error ? err.message : 'Сервис диагностики временно недоступен. Повторите попытку.'
+        const isInvalidInput = /invalid|неверн|ошибка ввода|validation|формат/i.test(msg)
+        setError(isInvalidInput ? 'Не используйте символы °, / и др. — только буквы, цифры и знаки .,;:!?-()' : msg)
       } finally {
         setLoading(false)
         setProgressStep(null)

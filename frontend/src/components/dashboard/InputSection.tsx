@@ -2,16 +2,22 @@ import { useDiagnosisStore } from '../../stores/diagnosisStore'
 import { Button } from '../ui/Button'
 
 const examplePrompts = [
-  'Пациент 45 лет, жалобы на острую боль в правой нижней части живота, тошнота, температура 38.2°C',
-  'Ребёнок 7 лет, кашель 5 дней, насморк, температура 37.5°C, хрипы в лёгких',
-  'Женщина 55 лет, головная боль, головокружение, повышение АД 160/100',
+  'Пациент 45 лет, жалобы на острую боль в правой нижней части живота, тошнота, температура 38.2 C',
+  'Ребёнок 7 лет, кашель 5 дней, насморк, температура 37.5 C, хрипы в лёгких',
+  'Женщина 55 лет, головная боль, головокружение, повышение АД 160 на 100',
 ]
 
 const VALID_CHARS = /^[а-яА-ЯёЁa-zA-Z0-9\s.,;:!?\-()]+$/
 const MAX_CHARS = 2000
+/** Strip symbols that cannot be sent to the API (e.g. °, /) so input is always valid. */
+const SANITIZE_REGEX = /[^\u0400-\u04FFa-zA-Z0-9\s.,;:!?\-()]/g
+function sanitizeInput(value: string): string {
+  return value.replace(SANITIZE_REGEX, '').slice(0, MAX_CHARS)
+}
 
 export function InputSection() {
   const { input, setInput, isLoading, clear } = useDiagnosisStore()
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(sanitizeInput(e.target.value))
   const isValid = input.trim().length > 0 && input.length <= MAX_CHARS && VALID_CHARS.test(input.replace(/\n/g, ' '))
   const wordCount = input.trim().split(/\s+/).filter(Boolean).length
 
@@ -22,13 +28,13 @@ export function InputSection() {
       </label>
       <textarea
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={handleChange}
         placeholder="Опишите жалобы пациента, анамнез, симптомы..."
         className="w-full min-h-[180px] px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-400 focus:ring-2 focus:ring-gray-200 outline-none resize-y font-cousine text-sm"
         disabled={isLoading}
       />
       <p className="font-alumni text-sm text-gray-500">
-        Используйте свободный текст на русском. Максимум {MAX_CHARS} символов.
+        Не используйте символы °, / и др. — только буквы, цифры, пробелы и знаки .,;:!?-(). Максимум {MAX_CHARS} символов.
       </p>
       {input.trim().length > 0 && (
         <p className={`font-alumni text-sm flex items-center gap-2 ${isValid ? 'text-green-600' : 'text-amber-600'}`}>
@@ -40,7 +46,7 @@ export function InputSection() {
               Валидный ввод ({wordCount} слов)
             </>
           ) : (
-            'Проверьте формат ввода'
+            'Только буквы, цифры и знаки .,;:!?-()'
           )}
         </p>
       )}
