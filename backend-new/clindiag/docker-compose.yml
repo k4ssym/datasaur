@@ -1,0 +1,53 @@
+# ════════════════════════════════════════════════════════════════════════════
+# КлинДиагноз — Docker Compose
+#
+# Запуск:      docker compose up --build
+# Пересобрать: docker compose build --no-cache
+#
+# Порт: 8080 → FastAPI API + Next.js UI (всё на одном порту)
+#
+# Образ полностью автономен:
+#   - sentence-transformers модель запечена внутрь
+#   - FAISS-индекс (1137 протоколов РК) запечен внутрь
+#   - prompts.json запечен внутрь
+# ════════════════════════════════════════════════════════════════════════════
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: clindiag:latest
+    container_name: clindiag
+
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - .env
+
+    environment:
+      # ── Qazcode LLM API (ключ берётся из .env, не из этого файла) ────
+      QAZCODE_BASE_URL:  "https://hub.qazcode.ai"
+      QAZCODE_MODEL:     "oss-120b"
+      LLM_TIMEOUT:       "120"
+
+      # ── RAG ──────────────────────────────────────────────────────────
+      INDEX_DIR:         "/app/index"
+      RAG_TOP_K:         "4"
+
+      # ── Промпты ──────────────────────────────────────────────────────
+      PROMPTS_FILE:      "/app/prompts.json"
+
+      # ── HuggingFace кэш (модель уже внутри образа) ───────────────────
+      HF_HOME:           "/app/.cache/huggingface"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+    restart: unless-stopped

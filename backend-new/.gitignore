@@ -1,0 +1,8 @@
+.env
+.venv
+venv/
+__pycache__/
+*.pyc
+data/faiss_index/*.faiss
+data/faiss_index/metadata.json
+*.egg-info/

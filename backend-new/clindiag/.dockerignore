@@ -1,0 +1,43 @@
+# ── VCS / IDE ────────────────────────────────────────────────────────────
+.git
+.gitignore
+.venv
+.env
+.env.*
+.claude/
+
+# ── Python cache ─────────────────────────────────────────────────────────
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+dist/
+build/
+
+# ── Документация и ноутбуки ──────────────────────────────────────────────
+*.md
+notebooks/
+
+# ── Тестовые данные (не нужны в production-образе) ───────────────────────
+data/
+self_refine_history.json
+self_refine_results.csv
+
+# ── FAISS-индекс — монтируется volume, не запекается в образ ─────────────
+index/
+
+# ── Лучшие промпты (для self-refine) — не нужны в образе ────────────────
+prompts_best.json
+
+# ── Next.js: node_modules и кэш сборки (пересобираются в Docker) ─────────
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ── macOS / Windows ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

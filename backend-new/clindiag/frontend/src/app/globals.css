@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-slate-900 font-sans;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+}
+
+@layer utilities {
+  /* Skeleton shimmer animation */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #f1f5f9 25%,
+      #e2e8f0 50%,
+      #f1f5f9 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-300;
+  }
+
+  /* Prose styles for LLM markdown output */
+  .prose-medical h2,
+  .prose-medical h3 {
+    @apply text-slate-800 font-semibold mt-4 mb-2;
+  }
+  .prose-medical p {
+    @apply text-slate-700 leading-relaxed mb-3;
+  }
+  .prose-medical strong {
+    @apply text-slate-900 font-semibold;
+  }
+  .prose-medical ol {
+    @apply list-none space-y-2 mb-4;
+  }
+  .prose-medical ol li {
+    @apply text-slate-700 leading-relaxed;
+  }
+  .prose-medical ul {
+    @apply list-disc list-inside space-y-1 mb-4;
+  }
+  .prose-medical ul li {
+    @apply text-slate-700;
+  }
+  .prose-medical code {
+    @apply text-primary-800 bg-primary-50 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.35s ease-out;
+}
